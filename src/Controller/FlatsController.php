@@ -7,6 +7,7 @@ use App\Repository\FlatsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @Route("/api")
@@ -14,16 +15,24 @@ use Symfony\Component\Routing\Annotation\Route;
 class FlatsController extends AbstractController
 {
     private $flatsRepository;
+    private $requestStack;
 
-    public function __construct(FlatsRepository $flatsRepository)
+    public function __construct(FlatsRepository $flatsRepository,RequestStack $requestStack)
     {
         $this->flatsRepository = $flatsRepository;
+        $this->requestStack = $requestStack;
     }
 
     #[Route('/api/flats/', methods: ['GET'])]
     public function getFlats()
     {
-        $flats = $this->flatsRepository->findAll();
+        $request = $this->requestStack->getCurrentRequest();
+        $sortField = $request->query->get('sortBy');
+        $sortOrder = $request->query->get('sortOrder');
+        $limit = $request->query->get('limit');
+        $page = $request->query->get('page');
+
+        $flats = $this->flatsRepository->findAllOrderedByField($sortField, $sortOrder, $limit, $page);
 
         // Convert products to array
         $data = [];
