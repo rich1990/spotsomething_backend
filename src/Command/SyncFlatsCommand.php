@@ -16,17 +16,14 @@ use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use App\Entity\Flats;
 use Doctrine\ORM\EntityManagerInterface;
 
-
 #[AsCommand(
     name: 'app:sync-flats',
     description: 'Refresh flats database.',
     hidden: false,
     aliases: ['app:sync-flats']
 )]
-
 class SyncFlatsCommand extends Command
 {
-
     private $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
@@ -35,31 +32,36 @@ class SyncFlatsCommand extends Command
         $this->entityManager = $entityManager;
     }
 
-    protected function configure(): void
-    {
-        $this->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
-    }
-
-    protected function execute(InputInterface $input,OutputInterface $output): int
+    /**
+     * Executes the command to sync flats data.
+     *
+     * @param InputInterface  $input  The input interface.
+     * @param OutputInterface $output The output interface.
+     *
+     * @return int The command exit code.
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
+        // Fetch flats data from URL
         $flats = Items::fromFile('http://feeds.spotahome.com/main.json');
 
+        // Process each flat and add it to the database
         foreach ($flats as $id => $flat) {
-            // just set few fields for demo purposes
-            $flat_entity = new Flats();
-            $flat_entity->setImg($flat->image_0);
-            $flat_entity->setCity($flat->city);
-            $flat_entity->setName($flat->title_es);
-            $flat_entity->setDescription($flat->description_es);
+            // Create a new flat entity and set its properties
+            $flatEntity = new Flats();
+            $flatEntity->setImg($flat->image_0);
+            $flatEntity->setCity($flat->city);
+            $flatEntity->setName($flat->title_es);
+            $flatEntity->setDescription($flat->description_es);
 
-            $this->entityManager->persist($flat_entity);
+            // Persist the flat entity
+            $this->entityManager->persist($flatEntity);
             $this->entityManager->flush();
         }
 
+        // Output success message
         $io->success('Completed');
 
         return Command::SUCCESS;

@@ -6,10 +6,13 @@ use App\Entity\Flats;
 use App\Repository\FlatsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * FlatsController.
+ *
  * @Route("/api")
  */
 class FlatsController extends AbstractController
@@ -17,12 +20,17 @@ class FlatsController extends AbstractController
     private $flatsRepository;
     private $requestStack;
 
-    public function __construct(FlatsRepository $flatsRepository,RequestStack $requestStack)
+    public function __construct(FlatsRepository $flatsRepository, RequestStack $requestStack)
     {
         $this->flatsRepository = $flatsRepository;
         $this->requestStack = $requestStack;
     }
 
+    /**
+     * Get a list of flats with optional sorting, pagination, and search.
+     *
+     * @return JsonResponse The JSON response containing flat data.
+     */
     #[Route('/api/flats/', methods: ['GET'])]
     public function getFlats()
     {
@@ -38,7 +46,7 @@ class FlatsController extends AbstractController
 
         $flats = $this->flatsRepository->findAllOrderedByField($sortField, $sortOrder, $offset, $limit, $search);
 
-        // Convert products to array
+        // Convert flats to array format
         $data = [];
         foreach ($flats as $flat) {
             $data[] = [
@@ -53,6 +61,13 @@ class FlatsController extends AbstractController
         return new JsonResponse($data);
     }
 
+    /**
+     * Get details of a single flat by its ID.
+     *
+     * @param int $id The ID of the flat.
+     *
+     * @return JsonResponse The JSON response containing flat details.
+     */
     #[Route('/api/flats/{id}', methods: ['GET'])]
     public function getFlat($id)
     {
@@ -65,11 +80,15 @@ class FlatsController extends AbstractController
         return $this->json($flat);
     }
 
+    /**
+     * Default action for the controller.
+     *
+     * @return Response The HTTP response.
+     */
     #[Route('/', methods: ['GET'])]
     public function default()
     {
-        echo 'This is a microservice, open Spotaroom frontend application, or use the apis';
+        echo 'This is a microservice, open Spotaroom frontend application, or use the APIs';
         exit;
     }
-
 }
