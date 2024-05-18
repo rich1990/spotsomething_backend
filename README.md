@@ -3,6 +3,8 @@
 Sinfony microservice that process huge json file
 ## Installation
 
+Define your database connection in the .env file
+
 ```bash
 composer install
 ```
