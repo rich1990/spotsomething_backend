@@ -17,9 +17,16 @@ class FlatsRepository extends ServiceEntityRepository
         parent::__construct($registry, Flats::class);
     }
 
-    public function findAllOrderedByField($field, $order, $offset, $limit)
+    public function findAllOrderedByField($field, $order, $offset, $limit, $search)
     {
         $qb = $this->createQueryBuilder('p');
+
+        // Add search condition if search term is provided
+        if(strlen((string) $search) > 0){
+            $qb->andWhere($qb->expr()->like('p.city', ':search'))
+            ->setParameter('search', '%' . $search . '%');
+        }
+
 
         $qb->orderBy(new Expr\OrderBy('p.' . $field, $order));
         

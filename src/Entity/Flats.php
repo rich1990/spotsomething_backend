@@ -23,6 +23,9 @@ class Flats
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $city = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -56,6 +59,17 @@ class Flats
     {
         $this->img = $img;
 
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): static
+    {
+        $this->city = $city;
         return $this;
     }
 

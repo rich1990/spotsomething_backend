@@ -37,40 +37,30 @@ class SyncFlatsCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
+        $this->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
             ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
         ;
     }
 
-    protected function execute(InputInterface $input,OutputInterface $output         ): int
+    protected function execute(InputInterface $input,OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        //$arg1 = $input->getArgument('arg1');
 
         $flats = Items::fromFile('http://feeds.spotahome.com/main.json');
 
-        echo '<pre>';
-        
         foreach ($flats as $id => $flat) {
+            // just set few fields for demo purposes
+            $flat_entity = new Flats();
+            $flat_entity->setImg($flat->image_0);
+            $flat_entity->setCity($flat->city);
+            $flat_entity->setName($flat->title_es);
+            $flat_entity->setDescription($flat->description_es);
 
-            // var_dump($id);
-            // var_dump($flat);
-            //     var_dump($flat->description_es);
-            // var_dump($flat->title_es);
-        $flat_entity = new Flats();
-        $flat_entity->setImg($flat->image_0);
-        $flat_entity->setName($flat->title_es);
-
-        $flat_entity->setDescription($flat->description_es);
-
-        $this->entityManager->persist($flat_entity);
-        $this->entityManager->flush();
-            // just process $user as usual
-       //     die('test');
-            echo $flat->id.PHP_EOL;
+            $this->entityManager->persist($flat_entity);
+            $this->entityManager->flush();
         }
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+
+        $io->success('Completed');
 
         return Command::SUCCESS;
     }

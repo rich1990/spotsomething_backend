@@ -32,9 +32,11 @@ class FlatsController extends AbstractController
         $limit = $request->query->get('limit') ?: 10;
         $offset = $request->query->get('page') ?: 1;
 
+        $search = $request->query->get('search');
+
         $offset = ($offset - 1) * $limit;
 
-        $flats = $this->flatsRepository->findAllOrderedByField($sortField, $sortOrder, $offset, $limit);
+        $flats = $this->flatsRepository->findAllOrderedByField($sortField, $sortOrder, $offset, $limit, $search);
 
         // Convert products to array
         $data = [];
@@ -42,6 +44,7 @@ class FlatsController extends AbstractController
             $data[] = [
                 'id' => $flat->getId(),
                 'name' => $flat->getName(),
+                'city' => $flat->getCity(),
                 'description' => $flat->getDescription(),
                 'img' => $flat->getImg(),
             ];
