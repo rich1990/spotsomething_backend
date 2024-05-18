@@ -26,7 +26,7 @@ class FlatsController extends AbstractController
         $this->requestStack = $requestStack;
     }
 
-    /**
+      /**
      * Get a list of flats with optional sorting, pagination, and search.
      *
      * @return JsonResponse The JSON response containing flat data.
@@ -34,30 +34,24 @@ class FlatsController extends AbstractController
     #[Route('/api/flats/', methods: ['GET'])]
     public function getFlats()
     {
+        // Retrieve query parameters
         $request = $this->requestStack->getCurrentRequest();
         $sortField = $request->query->get('sortBy') ?: 'id';
         $sortOrder = $request->query->get('sortOrder') ?: 'ASC';
         $limit = $request->query->get('limit') ?: 10;
         $offset = $request->query->get('page') ?: 1;
-
         $search = $request->query->get('search');
-
         $offset = ($offset - 1) * $limit;
 
+        // Retrieve flats from repository
         $flats = $this->flatsRepository->findAllOrderedByField($sortField, $sortOrder, $offset, $limit, $search);
 
         // Convert flats to array format
         $data = [];
         foreach ($flats as $flat) {
-            $data[] = [
-                'id' => $flat->getId(),
-                'name' => $flat->getName(),
-                'city' => $flat->getCity(),
-                'description' => $flat->getDescription(),
-                'img' => $flat->getImg(),
-            ];
+            $data[] = $this->flatToArray($flat);
         }
-    
+
         return new JsonResponse($data);
     }
 
@@ -71,13 +65,36 @@ class FlatsController extends AbstractController
     #[Route('/api/flats/{id}', methods: ['GET'])]
     public function getFlat($id)
     {
+        // Retrieve flat from repository
         $flat = $this->flatsRepository->find($id);
 
+        // Check if flat exists
         if (!$flat) {
             return new JsonResponse(['error' => 'Flat not found'], Response::HTTP_NOT_FOUND);
         }
 
-        return $this->json($flat);
+        // Convert flat to array format
+        $data = $this->flatToArray($flat);
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * Convert a Flat entity to array format.
+     *
+     * @param object $flat The Flat entity.
+     *
+     * @return array The array representation of the Flat entity.
+     */
+    private function flatToArray($flat): array
+    {
+        return [
+            'id' => $flat->getId(),
+            'name' => $flat->getName(),
+            'city' => $flat->getCity(),
+            'description' => $flat->getDescription(),
+            'img' => $flat->getImg(),
+        ];
     }
 
     /**
