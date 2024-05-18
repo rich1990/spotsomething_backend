@@ -17,7 +17,7 @@ class FlatsRepository extends ServiceEntityRepository
         parent::__construct($registry, Flats::class);
     }
 
-    public function findAllOrderedByField($field, $order, $page, $limit)
+    public function findAllOrderedByField($field, $order, $offset, $limit)
     {
         $qb = $this->createQueryBuilder('p');
 
@@ -27,7 +27,7 @@ class FlatsRepository extends ServiceEntityRepository
         $qb->setMaxResults($limit);
 
         // Set the offset (starting index) for pagination
-        $qb->setFirstResult($page);
+        $qb->setFirstResult($offset);
 
         return $qb->getQuery()->getResult();
     }

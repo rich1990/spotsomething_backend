@@ -27,12 +27,14 @@ class FlatsController extends AbstractController
     public function getFlats()
     {
         $request = $this->requestStack->getCurrentRequest();
-        $sortField = $request->query->get('sortBy');
-        $sortOrder = $request->query->get('sortOrder');
-        $limit = $request->query->get('limit');
-        $page = $request->query->get('page');
+        $sortField = $request->query->get('sortBy') ?: 'id';
+        $sortOrder = $request->query->get('sortOrder') ?: 'ASC';
+        $limit = $request->query->get('limit') ?: 10;
+        $offset = $request->query->get('page') ?: 1;
 
-        $flats = $this->flatsRepository->findAllOrderedByField($sortField, $sortOrder, $page, $limit);
+        $offset = ($offset - 1) * $limit;
+
+        $flats = $this->flatsRepository->findAllOrderedByField($sortField, $sortOrder, $offset, $limit);
 
         // Convert products to array
         $data = [];
@@ -58,6 +60,13 @@ class FlatsController extends AbstractController
         }
 
         return $this->json($flat);
+    }
+
+    #[Route('/', methods: ['GET'])]
+    public function default()
+    {
+        echo 'This is a microservice, open Spotaroom frontend application, or use the apis';
+        exit;
     }
 
 }
