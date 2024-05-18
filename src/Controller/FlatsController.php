@@ -92,6 +92,9 @@ class FlatsController extends AbstractController
     #[Route('/api/flats/{id}', methods: ['GET'])]
     public function getFlat($id)
     {
+        // Retrieve query parameters
+        $request = $this->requestStack->getCurrentRequest();
+
         $apiKey = $request->headers->get('X-API-KEY');
 
         $this->checkApiKey($apiKey);
