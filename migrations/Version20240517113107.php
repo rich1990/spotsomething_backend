@@ -21,7 +21,7 @@ final class Version20240518123456 extends AbstractMigration
         $table->addColumn('name', 'string', ['length' => 255, 'notnull' => true]);
         $table->addColumn('img', 'string', ['length' => 255, 'notnull' => false]);
         $table->addColumn('description', 'text', ['length' => 4294967295, 'notnull' => false]);
-        $table->addColumn('city', 'string', ['length' => 100, 'notnull' => false]);
+        $table->addColumn('city', 'string', ['length' => 100, 'notnull' => true]);
 
         $table->addIndex(['city'], 'idx_city');
         $table->setPrimaryKey(['id']);
@@ -30,6 +30,6 @@ final class Version20240518123456 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // Define how to revert the changes
-        $schema->dropTable('example');
+        $schema->dropTable('flats');
     }
 }
