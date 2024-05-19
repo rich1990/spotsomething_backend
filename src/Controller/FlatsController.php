@@ -23,7 +23,13 @@ class FlatsController extends AbstractController
     private $requestStack;
     private $apiKey;
 
-
+    /**
+     * Constructor
+     *
+     * @param FlatsRepository $flatsRepository
+     * @param RequestStack $requestStack
+     * @param ParameterBagInterface $params
+     */
     public function __construct(
         FlatsRepository $flatsRepository,
         RequestStack $requestStack,
@@ -48,7 +54,7 @@ class FlatsController extends AbstractController
         }
     }
     
-      /**
+    /**
      * Get a list of flats with optional sorting, pagination, and search.
      *
      * @return JsonResponse The JSON response containing flat data.
