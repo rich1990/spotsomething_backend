@@ -21,6 +21,11 @@ php bin/console app:sync-flats
 ```
 is going to take long time, stop it when you have enough data :)
 
+Testing
+```bash
+./vendor/bin/phpunit tests/FlatsTest.php
+```
+
 ## Configuring with frontend 
 
 Make sure you use the same API_KEY inside server.js inside
