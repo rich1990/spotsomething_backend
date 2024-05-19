@@ -1,4 +1,4 @@
-# Spot a Room frontend
+# Spot a Room backend
 
 Sinfony microservice that process huge json file
 ## Installation
