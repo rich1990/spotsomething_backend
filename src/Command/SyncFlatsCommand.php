@@ -45,7 +45,7 @@ class SyncFlatsCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         // Fetch flats data from URL
-        $flats = Items::fromFile('http://feeds.spotahome.com/main.json');
+        $flats = Items::fromFile('{json_url}');
 
         // Process each flat and add it to the database
         foreach ($flats as $id => $flat) {
